@@ -16,6 +16,9 @@ import com.example.BookStore.ServiceImpl.BookServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -26,6 +29,7 @@ public class BookController {
     @Autowired
     BookServiceImpl bookServiceImpl;
 
+    // add book in db
     @PostMapping("/addBooks")
     public ResponseEntity<String> addBook(@RequestBody AddBook book){
         try {
@@ -38,11 +42,20 @@ public class BookController {
         }
     }
 
-    @GetMapping("/Books")
+    // Retrieve List of all the Book.
+    @GetMapping("/books")
     public ResponseEntity<List<AddBook>> getBook(){
         List<AddBook> list = bookServiceImpl.GetBook();
-        return new ResponseEntity<>(list, HttpStatus.FOUND);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
-    
 
+    // Retrieve a single Book by id.
+    @GetMapping("/book/{id}")
+    public ResponseEntity<List<AddBook>> getBookById(@PathVariable Integer id){
+        List<AddBook> book = bookServiceImpl.GetBookById(id);
+        if(book != null){
+            return new ResponseEntity<>(book, HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(book, HttpStatus.OK);
+    } 
 }
