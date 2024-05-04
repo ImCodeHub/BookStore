@@ -22,19 +22,20 @@ public class BookServiceImpl implements BookService {
             bookRepository.save(books);
             return "Book details has been saved successfully.";
         } catch (Exception e) {
-            return "Error while adding the Book details."+ e.getMessage();
+            return "Error while adding the Book details." + e.getMessage();
         }
     }
 
     @Override
     public List<AddBook> GetBook() {
-       List<AddBook> response = new ArrayList<>();
-       List<Books> bookLists = bookRepository.findAll();
-       for (Books bookList : bookLists) {
-        AddBook addBook = new AddBook(bookList.getTitle(),bookList.getAuthor(),bookList.getPublicationYear(),bookList.getIsbn());
-        response.add(addBook);
-       }
-       return response;
+        List<AddBook> response = new ArrayList<>();
+        List<Books> bookLists = bookRepository.findAll();
+        for (Books bookList : bookLists) {
+            AddBook addBook = new AddBook(bookList.getTitle(), bookList.getAuthor(), bookList.getPublicationYear(),
+                    bookList.getIsbn());
+            response.add(addBook);
+        }
+        return response;
 
     }
 
@@ -43,7 +44,7 @@ public class BookServiceImpl implements BookService {
         List<AddBook> response = new ArrayList<>();
         Optional<Books> optionalbooks = bookRepository.findById(id);
 
-        if(optionalbooks.isPresent()){
+        if (optionalbooks.isPresent()) {
             Books books = optionalbooks.get();
             AddBook addBook = new AddBook();
             addBook.setTitle(books.getTitle());
@@ -52,11 +53,38 @@ public class BookServiceImpl implements BookService {
             addBook.setIsbn(books.getIsbn());
 
             response.add(addBook);
-        }else{
+        } else {
             return null;
         }
         return response;
-        
-    } 
+    }
 
+    // update the book details
+    @Override
+    public String UpdateBookDetails(Integer id, AddBook updateBook) {
+        Optional<Books> optional = bookRepository.findById(id);
+        if (!optional.isPresent()) {
+            return "Book not found";
+        }
+        Books books = optional.get();
+        books.setTitle(updateBook.getTitle());
+        books.setAuthor(updateBook.getAuthor());
+        books.setPublicationYear(updateBook.getPublicationYear());
+        books.setIsbn(updateBook.getIsbn());
+
+        // save the updated details in db
+        bookRepository.save(books);
+
+        return "Book details are successfully updated.";
+    }
+
+    @Override
+    public boolean DeleteBook(Integer id) {
+        Optional<Books> optional = bookRepository.findById(id);
+        if(optional.isPresent()){
+            bookRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }
