@@ -18,6 +18,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public String AddBook(AddBook book) {
         try {
+            if(!Validator.isValidPublicationYear(book.getPublicationYear())) {
+                return "Year is not valid.";
+            }
+            if(!Validator.isValidISBN(book.getIsbn())){
+                return "ISBN is not valid, kindly enter a valid ISBN";
+            }
             Books books = new Books(book.getTitle(), book.getAuthor(), book.getPublicationYear(), book.getIsbn());
             bookRepository.save(books);
             return "Book details has been saved successfully.";
