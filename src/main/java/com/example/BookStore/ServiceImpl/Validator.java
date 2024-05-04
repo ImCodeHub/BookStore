@@ -12,7 +12,7 @@ public class Validator {
             return false;
         }
         isbn = isbn.replace("-", "");
-        if(isbn.length()!=10 || isbn.length()!=13){
+        if(isbn.length()!=10 && isbn.length()!=13){
             return false;
         }
         if (isbn.length() == 10) {
@@ -22,27 +22,23 @@ public class Validator {
         }
     }
 
-    private static boolean isValidISBN10(String isbn) {
+    public static boolean isValidISBN10(String isbn) {
         int sum = 0;
         for (int i = 0; i < 9; i++) {
             char c = isbn.charAt(i);
             if (!Character.isDigit(c)) {
                 return false;
             }
-            sum += (10 - i) * Character.getNumericValue(c);
+            sum += (i + 1) * Character.getNumericValue(c);
         }
         char lastChar = isbn.charAt(9);
-        if (lastChar == 'X') {
-            sum += 10;
-        } else if (!Character.isDigit(lastChar)) {
-            return false;
-        } else {
-            sum += Character.getNumericValue(lastChar);
-        }
+        int lastDigit = (lastChar == 'X') ? 10 : Character.getNumericValue(lastChar);
+        sum += 10 * lastDigit;
         return sum % 11 == 0;
     }
+    
 
-    private static boolean isValidISBN13(String isbn) {
+    public static boolean isValidISBN13(String isbn) {
         int sum = 0;
         for (int i = 0; i < 12; i++) {
             char c = isbn.charAt(i);
